@@ -2,11 +2,39 @@ package assignment2
 
 import (
 	"net/http"
+	"strings"
 )
 
 func init() {
-	http.HandleFunc("/exchange", webhookHandler)
-	http.HandleFunc("/exchange/avarage", avgHandler)
-	http.HandleFunc("/exchange/latest", rateHandler)
+	http.HandleFunc("/exchange/", exchangeHandler)
 	http.ListenAndServe(":8080", nil)
+}
+
+func exchangeHandler(w http.ResponseWriter, r *http.Request) {
+	parts := strings.Split(r.URL.Path, "/")
+
+	switch parts[2] {
+	case "":
+		if r.Method == http.MethodPost {
+			webhookHandler(w, r)
+		} else {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+
+	case "avarage":
+		avgHandler(w, r)
+
+	case "latest":
+		rateHandler(w, r)
+
+	default:
+		if r.Method == http.MethodGet {
+			webhookHandler(w, r)
+		} else {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+	}
+
 }

@@ -15,7 +15,7 @@ import (
 
 var (
 	getRegExp, gErr  = regexp.Compile("^/exchange/[0-9a-fA-F]{16,32}/?$")
-	postRegExp, pErr = regexp.Compile("^/exchange$")
+	postRegExp, pErr = regexp.Compile("^/exchange/$")
 )
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
@@ -72,7 +72,7 @@ func processPost(rBody io.ReadCloser) (body string, status int) {
 	var hook Webhook
 	err = json.Unmarshal(payload, &hook)
 	if err != nil {
-		return http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError
+		return http.StatusText(http.StatusBadRequest), http.StatusBadRequest
 	}
 
 	sess, err := mgo.Dial(Cfg.DBurl)
@@ -83,7 +83,7 @@ func processPost(rBody io.ReadCloser) (body string, status int) {
 
 	col := sess.DB(Cfg.DBName).C("Webhooks")
 	info, err := col.Upsert(&hook, &hook)
-	res := fmt.Sprintf("%v", info.UpsertedId.(bson.ObjectId))
+	res := fmt.Sprintf("%v", info.UpsertedId)
 	return res, http.StatusOK
 }
 

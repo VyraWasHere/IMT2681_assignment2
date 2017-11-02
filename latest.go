@@ -26,7 +26,7 @@ func rateHandler(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(pl, &payload)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
