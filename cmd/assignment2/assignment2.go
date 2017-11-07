@@ -1,11 +1,11 @@
-package assignment2
+package main
 
 import (
 	"net/http"
 	"strings"
 )
 
-func init() {
+func main() {
 	http.HandleFunc("/exchange/", exchangeHandler)
 	http.ListenAndServe(":8080", nil)
 }

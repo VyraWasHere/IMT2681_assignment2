@@ -1,4 +1,4 @@
-package assignment2
+package main
 
 import (
 	"encoding/json"
