@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -12,9 +11,10 @@ func main() {
 }
 
 func exchangeHandler(w http.ResponseWriter, r *http.Request) {
-	parts := strings.Split(r.URL.Path, "/")
-
-	switch parts[2] {
+	//parts := strings.Split(r.URL.Path, "/")
+	http.Error(w, r.Method, 418)
+	return
+	/*switch parts[2] {
 	case "":
 		if r.Method == http.MethodPost {
 			webhookHandler(w, r)
@@ -36,6 +36,6 @@ func exchangeHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "test: "+http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-	}
+	}*/
 
 }
