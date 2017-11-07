@@ -53,6 +53,20 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 
 		body, status = processGet(strings.Split(r.URL.Path, "/")[2])
 
+	case http.MethodDelete:
+		if gErr != nil {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			return
+		}
+
+		match := getRegExp.Match([]byte(r.URL.Path))
+		if !match {
+			http.Error(w, "Please provide a valid id", http.StatusBadRequest)
+			return
+		}
+
+		body, status = processDelete(strings.Split(r.URL.Path, "/")[2])
+
 	default:
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
@@ -83,8 +97,13 @@ func processPost(rBody io.ReadCloser) (body string, status int) {
 
 	col := sess.DB(cfg.DBName).C("Webhooks")
 	info, err := col.Upsert(&hook, &hook)
-	res := fmt.Sprintf("%v", info.UpsertedId)
-	return res, http.StatusOK
+	body = fmt.Sprintf("%v", info.UpsertedId)
+	if info.UpsertedId == nil {
+		status = http.StatusOK
+	} else {
+		status = http.StatusCreated
+	}
+	return body, status
 }
 
 func processGet(id string) (body string, status int) {
@@ -114,6 +133,22 @@ func newDBSession() (sess *mgo.Session, db *mgo.Database, err error) {
 		db = sess.DB(cfg.DBName)
 	}
 	return
+}
+
+func processDelete(id string) (body string, status int) {
+	sess, err := mgo.Dial(cfg.DBuri)
+	defer sess.Close()
+	if err != nil {
+		return "No DB Connection", http.StatusInternalServerError
+	}
+
+	col := sess.DB(cfg.DBName).C("Webhooks")
+	err = col.RemoveId(bson.ObjectIdHex(id))
+	if err != nil {
+		return fmt.Sprintf("Not found: %s", id), http.StatusNotFound
+	}
+
+	return "", http.StatusOK
 }
 
 // Webhook : The payload structure

@@ -27,7 +27,7 @@ func rateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := http.Get("http://api.fixer.io/latest")
+	resp, err := http.Get("http://api.fixer.io/latest?symbols=" + payload.BaseCurrency + "," + payload.TargetCurrency)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("No Response from Fixer: %v", err), http.StatusNoContent)
 		return
@@ -46,24 +46,16 @@ func rateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if payload.BaseCurrency == "EUR" || payload.TargetCurrency == "EUR" {
-		for k, v := range latestRates.Rates {
-			if k == payload.TargetCurrency {
-				fmt.Fprint(w, v)
-				return
-			} else if k == payload.BaseCurrency {
-				fmt.Fprint(w, 1/v)
-				return
-			}
+	for k, v := range latestRates.Rates {
+		if k == payload.TargetCurrency {
+			fmt.Fprint(w, v)
+			return
 		}
-	} else {
-		http.Error(w, "Only Euro conversion supported", http.StatusNotImplemented)
-		return
 	}
 
 }
 
-// Rates : Structre to fetc latest rates into
+// Rates : Structure to fetch latest rates into
 type Rates struct {
 	Base  string
 	Rates map[string]float32
