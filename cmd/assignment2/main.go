@@ -30,7 +30,7 @@ func exchangeHandler(w http.ResponseWriter, r *http.Request) {
 		rateHandler(w, r)
 
 	default:
-		if r.Method == http.MethodGet {
+		if r.Method == http.MethodGet || r.Method == http.MethodDelete {
 			webhookHandler(w, r)
 		} else {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
