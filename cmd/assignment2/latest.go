@@ -27,32 +27,39 @@ func rateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := http.Get("http://api.fixer.io/latest?symbols=" + payload.BaseCurrency + "," + payload.TargetCurrency)
+	rate, body, status := getRate("latest", payload.BaseCurrency, payload.TargetCurrency)
+	if status == http.StatusOK {
+		fmt.Fprint(w, rate)
+	} else {
+		w.WriteHeader(status)
+		fmt.Fprint(w, body)
+	}
+}
+
+func getRate(when, base, target string) (rate float32, body string, status int) {
+	resp, err := http.Get(fmt.Sprintf("http://api.fixer.io/%s?base=%s", when, base))
 	if err != nil {
-		http.Error(w, fmt.Sprintf("No Response from Fixer: %v", err), http.StatusNoContent)
-		return
+		return 0.00, fmt.Sprintf("No Response from Fixer: %v", err), http.StatusNoContent
 	}
 
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return 0.00, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError
 	}
 
-	var latestRates Rates
-	err = json.Unmarshal(respBody, &latestRates)
+	var fetchRates Rates
+	err = json.Unmarshal(respBody, &fetchRates)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
+		return 0.00, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError
 	}
 
-	for k, v := range latestRates.Rates {
-		if k == payload.TargetCurrency {
-			fmt.Fprint(w, v)
-			return
+	for k, v := range fetchRates.Rates {
+		if k == target {
+			return v, "", http.StatusOK
 		}
 	}
 
+	return 0.00, "Not Found", http.StatusNotFound
 }
 
 // Rates : Structure to fetch latest rates into

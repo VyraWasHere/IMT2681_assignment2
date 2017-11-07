@@ -68,7 +68,7 @@ func webhookHandler(w http.ResponseWriter, r *http.Request) {
 		body, status = processDelete(strings.Split(r.URL.Path, "/")[2])
 
 	default:
-		http.Error(w, "test 2: "+http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
