@@ -3,22 +3,6 @@
 	"ignore": "test",
 	"package": [
 		{
-			"path": "appengine",
-			"revision": ""
-		},
-		{
-			"checksumSHA1": "HUiRjFg4WDZuxZ/wp2sVf3h+u54=",
-			"path": "github.com/golang/appengine",
-			"revision": "9d8544a6b2c7df9cff240fcf92d7b2f59bc13416",
-			"revisionTime": "2017-10-31T19:43:29Z"
-		},
-		{
-			"checksumSHA1": "AME8JLOV6RhPlw9cvoj3UE+MKjI=",
-			"path": "github.com/golang/appengine/urlfetch",
-			"revision": "9d8544a6b2c7df9cff240fcf92d7b2f59bc13416",
-			"revisionTime": "2017-10-31T19:43:29Z"
-		},
-		{
 			"checksumSHA1": "yqF125xVSkmfLpIVGrLlfE05IUk=",
 			"path": "github.com/golang/protobuf/proto",
 			"revision": "1643683e1b54a9e88ad26d98f81400c8c9d9f4f9",

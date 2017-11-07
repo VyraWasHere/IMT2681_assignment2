@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/golang/appengine"
-	"github.com/golang/appengine/urlfetch"
 )
 
 func rateHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,9 +27,7 @@ func rateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctx := appengine.NewContext(r)
-	client := urlfetch.Client(ctx)
-	resp, err := client.Get("http://api.fixer.io/latest")
+	resp, err := http.Get("http://api.fixer.io/latest")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("No Response from Fixer: %v", err), http.StatusNoContent)
 		return
