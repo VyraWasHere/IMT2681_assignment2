@@ -1,1 +1,1 @@
-web: IMT2681_assignment2
+web: assignment2
