@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
 )
 
-// Fills out with values from env
-var cfg = newConfig(os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_ID"), os.Getenv("DB_PORT"), os.Getenv("DB_NAME"))
+// Fill out with your own values
+var cfg = newConfig("guest", "imt2681", "ds227035", "27035", "imt2681_assignment2")
 
 type config struct {
 	DBName,
