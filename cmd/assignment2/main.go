@@ -15,6 +15,16 @@ func exchangeHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
 
 	switch parts[2] {
+
+	case "avarage":
+		avgHandler(w, r)
+
+	case "latest":
+		rateHandler(w, r)
+
+	case "evaluationtrigger":
+		evalHandler(w, r)
+
 	case "":
 		if r.Method == http.MethodPost {
 			webhookHandler(w, r)
@@ -22,12 +32,6 @@ func exchangeHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 			return
 		}
-
-	case "avarage":
-		avgHandler(w, r)
-
-	case "latest":
-		rateHandler(w, r)
 
 	default:
 		if r.Method == http.MethodGet || r.Method == http.MethodDelete {
