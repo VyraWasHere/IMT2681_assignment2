@@ -75,26 +75,26 @@ func processPost(rBody io.ReadCloser) (body string, status int) {
 		return http.StatusText(http.StatusBadRequest), http.StatusBadRequest
 	}
 
-	sess, err := mgo.Dial(Cfg.DBurl)
+	sess, err := mgo.Dial(cfg.DBurl)
 	defer sess.Close()
 	if err != nil {
 		return "No DB Connection", http.StatusInternalServerError
 	}
 
-	col := sess.DB(Cfg.DBName).C("Webhooks")
+	col := sess.DB(cfg.DBName).C("Webhooks")
 	info, err := col.Upsert(&hook, &hook)
 	res := fmt.Sprintf("%v", info.UpsertedId)
 	return res, http.StatusOK
 }
 
 func processGet(id string) (body string, status int) {
-	sess, err := mgo.Dial(Cfg.DBurl)
+	sess, err := mgo.Dial(cfg.DBuri)
 	defer sess.Close()
 	if err != nil {
 		return "No DB Connection", http.StatusInternalServerError
 	}
 
-	col := sess.DB(Cfg.DBName).C("Webhooks")
+	col := sess.DB(cfg.DBName).C("Webhooks")
 	var res Webhook
 	err = col.FindId(bson.ObjectIdHex(id)).One(&res)
 	if err != nil {
@@ -111,7 +111,7 @@ func processGet(id string) (body string, status int) {
 
 func newDBSession() (sess *mgo.Session, db *mgo.Database, err error) {
 	if err == nil {
-		db = sess.DB(Cfg.DBName)
+		db = sess.DB(cfg.DBName)
 	}
 	return
 }
