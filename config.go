@@ -19,4 +19,5 @@ func newConfig(dbuser, dbpass, mLabID, port, dbname string) (cfg config) {
 	cfg.DBUser = dbuser
 	cfg.DBPass = dbpass
 	cfg.DBuri = fmt.Sprintf("mongodb://%s:%s@%s.mlab.com:%s/%s", dbuser, dbpass, mLabID, port, dbname)
+	return
 }
