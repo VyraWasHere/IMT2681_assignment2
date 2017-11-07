@@ -75,7 +75,7 @@ func processPost(rBody io.ReadCloser) (body string, status int) {
 		return http.StatusText(http.StatusBadRequest), http.StatusBadRequest
 	}
 
-	sess, err := mgo.Dial(cfg.DBurl)
+	sess, err := mgo.Dial(cfg.DBuri)
 	defer sess.Close()
 	if err != nil {
 		return "No DB Connection", http.StatusInternalServerError
