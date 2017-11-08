@@ -98,6 +98,7 @@ func processPost(rBody io.ReadCloser) (body string, status int) {
 	col := sess.DB(cfg.DBName).C("Webhooks")
 	info, err := col.Upsert(&hook, &hook)
 	body = fmt.Sprintf("%v", info.UpsertedId)
+	body = strings.Split(body, "\"")[1]
 	if info.UpsertedId == nil {
 		status = http.StatusOK
 	} else {
