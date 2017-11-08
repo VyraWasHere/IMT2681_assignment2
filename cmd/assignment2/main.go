@@ -9,6 +9,8 @@ import (
 func main() {
 	http.HandleFunc("/exchange", exchangeHandler)
 	http.HandleFunc("/exchange/latest", rateHandler)
+	http.HandleFunc("/exchange/avarage", avgHandler)
+	http.HandleFunc("/exchange/evaluationtrigger", evalHandler)
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
@@ -23,18 +25,8 @@ func exchangeHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else if len(parts) > 2 {
-		switch parts[2] {
+		if parts[2] == "" {
 
-		case "avarage":
-			avgHandler(w, r)
-
-		case "latest":
-			rateHandler(w, r)
-
-		case "evaluationtrigger":
-			evalHandler(w, r)
-
-		case "":
 			if r.Method == http.MethodPost {
 				webhookHandler(w, r)
 			} else {
@@ -42,15 +34,13 @@ func exchangeHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-		default:
-			if r.Method == http.MethodGet || r.Method == http.MethodDelete {
-				webhookHandler(w, r)
-			} else {
+		} else if r.Method == http.MethodGet || r.Method == http.MethodDelete{
+			webhookHandler(w, r)
+		} else {
 				http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 				return
 			}
-		}
-	} else {
+		} else {
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 }
