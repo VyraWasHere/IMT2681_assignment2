@@ -7,12 +7,21 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/exchange/", exchangeHandler)
+	http.HandleFunc("/exchange", exchangeHandler)
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
 func exchangeHandler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.URL.Path, "/")
+
+	if len(parts) == 2 {
+		if r.Method == http.MethodPost {
+			webhookHandler(w, r)
+		} else {
+			http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+			return
+		}
+	}
 
 	switch parts[2] {
 
