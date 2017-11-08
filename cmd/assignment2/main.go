@@ -8,6 +8,7 @@ import (
 
 func main() {
 	http.HandleFunc("/exchange", exchangeHandler)
+	http.HandleFunc("/exchange/latest", rateHandler)
 	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
 
