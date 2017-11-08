@@ -15,7 +15,7 @@ import (
 
 var (
 	getRegExp, gErr  = regexp.Compile("^/exchange/[0-9a-fA-F]{16,32}/?$")
-	postRegExp, pErr = regexp.Compile("^/exchange/$")
+	postRegExp, pErr = regexp.Compile("^/exchange/?$")
 )
 
 func webhookHandler(w http.ResponseWriter, r *http.Request) {
